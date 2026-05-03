@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>游子卦计算器</title>
-  <meta name="description" content="一个纯前端、零依赖的游子卦计算器，用于计算元亨卦、姓名卦与入世卦。" />
+  <meta name="description" content="一个纯前端游子卦计算器，用于计算元亨卦、姓名卦与入世卦。" />
   <style>
     :root {
       --bg: #f6f1e7;
@@ -31,12 +31,7 @@
         var(--bg);
     }
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 42px 18px 60px;
-    }
-
+    .wrap { max-width: 980px; margin: 0 auto; padding: 42px 18px 60px; }
     .hero { text-align: center; margin-bottom: 24px; }
 
     .badge {
@@ -74,24 +69,10 @@
       backdrop-filter: blur(8px);
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-    .date-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-    }
-
-    label {
-      display: block;
-      margin: 0 0 8px;
-      font-weight: 700;
-      color: var(--ink);
-    }
+    label { display: block; margin: 0 0 8px; font-weight: 700; color: var(--ink); }
 
     input, select {
       width: 100%;
@@ -124,14 +105,9 @@
 
     button:hover { filter: brightness(0.98); transform: translateY(-1px); }
 
-    .hint {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+    .hint { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
-    .stroke-panel {
+    .auto-stroke-panel {
       display: none;
       border: 1px dashed var(--line);
       border-radius: 18px;
@@ -145,26 +121,19 @@
       gap: 12px;
     }
 
-    .stroke-char {
+    .stroke-card {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      padding: 10px;
+      padding: 12px 14px;
       border: 1px solid var(--line);
       border-radius: 14px;
       background: #fffdf8;
     }
 
-    .stroke-char strong {
-      min-width: 32px;
-      text-align: center;
-      font-size: 24px;
-    }
-
-    .stroke-char input {
-      padding: 10px;
-      text-align: center;
-    }
+    .stroke-card strong { font-size: 26px; }
+    .stroke-card span { color: var(--muted); font-weight: 800; }
 
     .error {
       display: none;
@@ -178,12 +147,7 @@
     }
 
     .result { display: none; }
-
-    .gua-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
+    .gua-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 
     .gua-box {
       padding: 22px;
@@ -193,27 +157,12 @@
       text-align: center;
     }
 
-    .gua-label {
-      color: var(--muted);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-    }
-
-    .gua-name {
-      margin: 10px 0 6px;
-      font-size: clamp(36px, 7vw, 60px);
-      font-weight: 900;
-      line-height: 1;
-    }
-
+    .gua-label { color: var(--muted); font-weight: 700; letter-spacing: 0.08em; }
+    .gua-name { margin: 10px 0 6px; font-size: clamp(36px, 7vw, 60px); font-weight: 900; line-height: 1; }
     .gua-code { color: var(--muted); font-size: 14px; }
     .section-title { margin: 0 0 14px; font-size: 22px; }
 
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 
     .detail {
       display: flex;
@@ -228,36 +177,13 @@
     .detail span:first-child { color: var(--muted); }
     .detail span:last-child { font-weight: 800; text-align: right; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 14px;
-      background: #fffdf8;
-    }
-
-    th, td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-    }
-
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; background: #fffdf8; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; }
     th { color: var(--muted); }
     tr:last-child td { border-bottom: 0; }
 
-    .footer {
-      margin-top: 26px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    code {
-      padding: 2px 6px;
-      border-radius: 7px;
-      background: rgba(138, 90, 36, 0.10);
-    }
+    .footer { margin-top: 26px; color: var(--muted); text-align: center; font-size: 14px; line-height: 1.8; }
+    code { padding: 2px 6px; border-radius: 7px; background: rgba(138, 90, 36, 0.10); }
 
     @media (max-width: 760px) {
       .date-grid, .gua-grid, .detail-grid { grid-template-columns: 1fr; }
@@ -270,10 +196,10 @@
 <body>
   <main class="wrap">
     <section class="hero">
-      <div class="badge">纯前端 · 零依赖 · 本地计算</div>
+      <div class="badge">纯前端 · 自动笔画 · 本地计算</div>
       <h1>游子卦计算器</h1>
       <p class="subtitle">
-        输入姓名，逐字填写简体笔画；再通过标准年月日下拉选择生日。系统会按“不补零”的规则自动拼接生日数字，并计算元亨卦、姓名卦与入世卦。
+        输入姓名后自动计算简体笔画；通过标准年月日下拉选择生日。系统按“不补零”规则自动拼接生日数字，并计算元亨卦、姓名卦与入世卦。
       </p>
     </section>
 
@@ -283,12 +209,12 @@
           <div>
             <label for="name">姓名</label>
             <input id="name" name="name" autocomplete="name" placeholder="请输入简体姓名" required />
-            <div class="hint">输入姓名后，下方会自动拆字，请逐字填写简体笔画数。</div>
+            <div class="hint">笔画由浏览器自动计算。若 CDN 加载失败，页面会提示刷新或检查网络。</div>
           </div>
 
-          <div id="strokePanel" class="stroke-panel">
-            <label>姓名笔画</label>
-            <div id="strokeInputs" class="stroke-grid"></div>
+          <div id="autoStrokePanel" class="auto-stroke-panel">
+            <label>自动识别的简体笔画</label>
+            <div id="autoStrokePreview" class="stroke-grid"></div>
           </div>
 
           <div>
@@ -298,9 +224,7 @@
               <select id="month" required></select>
               <select id="day" required></select>
             </div>
-            <div class="hint">
-              页面会自动拼接为不补零生日数字。例如选择 1987 年 3 月 11 日，会得到 <code>1987311</code>。
-            </div>
+            <div class="hint">例如选择 1987 年 4 月 26 日，内部生日数字为 <code>1987426</code>。</div>
           </div>
 
           <button type="submit">开始计算</button>
@@ -339,19 +263,16 @@
       <div class="card">
         <h2 class="section-title">姓名笔画</h2>
         <table>
-          <thead>
-            <tr><th>字</th><th>简体笔画</th></tr>
-          </thead>
+          <thead><tr><th>字</th><th>简体笔画</th></tr></thead>
           <tbody id="strokeRows"></tbody>
         </table>
       </div>
     </section>
 
-    <div class="footer">
-      开源项目：游子卦计算器。所有计算均在浏览器本地完成，不上传姓名与生日。
-    </div>
+    <div class="footer">开源项目：游子卦计算器。姓名与生日只在浏览器本地参与计算。</div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/cnchar@3.2.6/cnchar.min.js"></script>
   <script>
     const YOUZI_GUA = [
       "坤", "复", "师", "临", "谦", "明夷", "升", "泰",
@@ -364,22 +285,70 @@
       "否", "无妄", "讼", "履", "遁", "同人", "姤", "乾"
     ];
 
+    function ensureStrokeLibraryReady() {
+      if (!window.cnchar || typeof window.cnchar.stroke !== "function") {
+        throw new Error("汉字笔画库尚未加载成功，请刷新页面或检查网络。当前页面使用 cnchar 自动计算笔画。 ");
+      }
+    }
+
+    function normalizeStrokeResult(value) {
+      if (Array.isArray(value)) return Number(value[0]);
+      return Number(value);
+    }
+
+    function getStrokeCount(char) {
+      ensureStrokeLibraryReady();
+      const raw = window.cnchar.stroke(char);
+      const count = normalizeStrokeResult(raw);
+      if (!Number.isInteger(count) || count <= 0) {
+        throw new Error(`无法自动识别「${char}」的简体笔画，请确认输入为常用简体汉字。`);
+      }
+      return count;
+    }
+
+    function calculateStrokeDetails(name) {
+      if (!name) throw new Error("请输入姓名。");
+      return Array.from(name).map(char => ({ 字: char, 笔画: getStrokeCount(char) }));
+    }
+
+    function updateAutoStrokePreview() {
+      const panel = document.getElementById("autoStrokePanel");
+      const preview = document.getElementById("autoStrokePreview");
+      const error = document.getElementById("error");
+      const name = document.getElementById("name").value.trim();
+
+      preview.innerHTML = "";
+      if (!name) {
+        panel.style.display = "none";
+        return;
+      }
+
+      try {
+        const details = calculateStrokeDetails(name);
+        details.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "stroke-card";
+          card.innerHTML = `<strong>${item.字}</strong><span>${item.笔画} 画</span>`;
+          preview.appendChild(card);
+        });
+        panel.style.display = "block";
+        error.style.display = "none";
+        error.textContent = "";
+      } catch (err) {
+        panel.style.display = "none";
+        error.textContent = err.message;
+        error.style.display = "block";
+      }
+    }
+
     function populateDateSelectors() {
       const yearSelect = document.getElementById("year");
       const monthSelect = document.getElementById("month");
       const daySelect = document.getElementById("day");
       const currentYear = new Date().getFullYear();
 
-      yearSelect.innerHTML = "";
-      monthSelect.innerHTML = "";
-      daySelect.innerHTML = "";
-
-      for (let y = currentYear; y >= 1900; y--) {
-        yearSelect.add(new Option(`${y} 年`, String(y)));
-      }
-      for (let m = 1; m <= 12; m++) {
-        monthSelect.add(new Option(`${m} 月`, String(m)));
-      }
+      for (let y = currentYear; y >= 1900; y--) yearSelect.add(new Option(`${y} 年`, String(y)));
+      for (let m = 1; m <= 12; m++) monthSelect.add(new Option(`${m} 月`, String(m)));
 
       function refreshDays() {
         const y = Number(yearSelect.value);
@@ -387,16 +356,13 @@
         const oldDay = Number(daySelect.value || 1);
         const days = new Date(y, m, 0).getDate();
         daySelect.innerHTML = "";
-        for (let d = 1; d <= days; d++) {
-          daySelect.add(new Option(`${d} 日`, String(d)));
-        }
+        for (let d = 1; d <= days; d++) daySelect.add(new Option(`${d} 日`, String(d)));
         daySelect.value = String(Math.min(oldDay, days));
       }
 
       yearSelect.value = "1987";
       monthSelect.value = "1";
       refreshDays();
-
       yearSelect.addEventListener("change", refreshDays);
       monthSelect.addEventListener("change", refreshDays);
     }
@@ -405,59 +371,14 @@
       const year = document.getElementById("year").value;
       const month = document.getElementById("month").value;
       const day = document.getElementById("day").value;
-      if (!year || !month || !day) {
-        throw new Error("请选择完整出生日期。");
-      }
+      if (!year || !month || !day) throw new Error("请选择完整出生日期。");
       return `${year}${month}${day}`;
-    }
-
-    function updateStrokeInputs() {
-      const name = document.getElementById("name").value.trim();
-      const panel = document.getElementById("strokePanel");
-      const container = document.getElementById("strokeInputs");
-      container.innerHTML = "";
-
-      if (!name) {
-        panel.style.display = "none";
-        return;
-      }
-
-      panel.style.display = "block";
-      Array.from(name).forEach((char, index) => {
-        const item = document.createElement("div");
-        item.className = "stroke-char";
-        item.innerHTML = `
-          <strong>${char}</strong>
-          <input type="number" min="1" max="64" step="1" inputmode="numeric" data-char="${char}" data-index="${index}" placeholder="笔画" required>
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function collectStrokeDetails(name) {
-      const inputs = Array.from(document.querySelectorAll("#strokeInputs input"));
-      if (!name) {
-        throw new Error("请输入姓名。");
-      }
-      if (inputs.length !== Array.from(name).length) {
-        throw new Error("姓名笔画输入区尚未生成，请重新输入姓名。 ");
-      }
-
-      return inputs.map(input => {
-        const char = input.dataset.char;
-        const strokes = Number(input.value);
-        if (!Number.isInteger(strokes) || strokes <= 0) {
-          throw new Error(`请填写「${char}」的有效简体笔画数。`);
-        }
-        return { 字: char, 笔画: strokes };
-      });
     }
 
     function normalizeBirthday(birthdayText) {
       const year = Number(birthdayText.slice(0, 4));
       const monthDay = birthdayText.slice(4);
-      const adjustedYear = year - 15;
-      return Number(String(adjustedYear) + monthDay);
+      return Number(String(year - 15) + monthDay);
     }
 
     function numberToBits(n) {
@@ -536,7 +457,8 @@
       };
     }
 
-    function calculateFullGua(name, birthdayText, strokeDetails) {
+    function calculateFullGua(name, birthdayText) {
+      const strokeDetails = calculateStrokeDetails(name);
       const yuanheng = calculateYuanhengGua(birthdayText);
       const nameGua = calculateNameGua(name, strokeDetails);
       const rushi = calculateRushiGua(yuanheng.元亨卦码, nameGua.姓名卦码);
@@ -583,7 +505,7 @@
       document.getElementById("result").style.display = "block";
     }
 
-    document.getElementById("name").addEventListener("input", updateStrokeInputs);
+    document.getElementById("name").addEventListener("input", updateAutoStrokePreview);
 
     document.getElementById("calculatorForm").addEventListener("submit", event => {
       event.preventDefault();
@@ -594,8 +516,7 @@
       try {
         const name = document.getElementById("name").value.trim();
         const birthday = buildBirthdayText();
-        const strokeDetails = collectStrokeDetails(name);
-        const result = calculateFullGua(name, birthday, strokeDetails);
+        const result = calculateFullGua(name, birthday);
         renderResult(result);
       } catch (err) {
         document.getElementById("result").style.display = "none";
