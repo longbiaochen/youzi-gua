@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>游子卦计算器</title>
+  <meta name="description" content="一个纯前端、零依赖的游子卦计算器，用于计算元亨卦、姓名卦与入世卦。" />
+  <style>
+    :root {
+      --bg: #f6f1e7;
+      --card: #fffaf0;
+      --ink: #211b14;
+      --muted: #746858;
+      --line: #e5dac8;
+      --accent: #8a5a24;
+      --accent-dark: #5f3b12;
+      --danger: #9f2f25;
+      --danger-bg: #fff0ec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(138, 90, 36, 0.12), transparent 28%),
+        radial-gradient(circle at 100% 20%, rgba(138, 90, 36, 0.10), transparent 24%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 42px 18px 60px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.7);
+      font-size: 14px;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(34px, 7vw, 64px);
+      letter-spacing: 0.06em;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0 auto;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .card {
+      background: rgba(255, 250, 240, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 22px 70px rgba(64, 43, 18, 0.12);
+      padding: 24px;
+      margin: 18px 0;
+      backdrop-filter: blur(8px);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      color: var(--ink);
+      background: #fffdf8;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(138, 90, 36, 0.6);
+      box-shadow: 0 0 0 4px rgba(138, 90, 36, 0.10);
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(138, 90, 36, 0.26);
+    }
+
+    button:hover { filter: brightness(0.98); transform: translateY(-1px); }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .error {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border: 1px solid rgba(159, 47, 37, 0.25);
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-radius: 14px;
+      line-height: 1.7;
+    }
+
+    .result { display: none; }
+
+    .gua-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .gua-box {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fffdf8;
+      text-align: center;
+    }
+
+    .gua-label {
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .gua-name {
+      margin: 10px 0 6px;
+      font-size: clamp(36px, 7vw, 60px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .gua-code {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffdf8;
+    }
+
+    .detail span:first-child { color: var(--muted); }
+    .detail span:last-child { font-weight: 800; text-align: right; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      background: #fffdf8;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th { color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+
+    .footer {
+      margin-top: 26px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 7px;
+      background: rgba(138, 90, 36, 0.10);
+    }
+
+    @media (max-width: 760px) {
+      .form-grid, .gua-grid, .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wrap { padding-top: 28px; }
+      .card { padding: 18px; border-radius: 20px; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="badge">纯前端 · 零依赖 · 本地计算</div>
+      <h1>游子卦计算器</h1>
+      <p class="subtitle">
+        输入姓名与生日数字，计算元亨卦、姓名卦与入世卦。生日按原始数字拼接，不补零；计算前先将年份减 15，再进入元亨卦规则。
+      </p>
+    </section>
+
+    <section class="card">
+      <form id="calculatorForm">
+        <div class="form-grid">
+          <div>
+            <label for="name">姓名</label>
+            <input id="name" name="name" autocomplete="name" placeholder="请输入简体姓名" required />
+          </div>
+
+          <div>
+            <label for="birthday">生日数字</label>
+            <input id="birthday" name="birthday" inputmode="numeric" placeholder="例如 1987年3月11日输入 1987311" required />
+          </div>
+
+          <button type="submit">开始计算</button>
+        </div>
+
+        <div class="hint">
+          生日数字不补零。例如 1987 年 3 月 11 日输入 <code>1987311</code>；1988 年 12 月 15 日输入 <code>19881215</code>。
+        </div>
+        <div id="error" class="error"></div>
+      </form>
+    </section>
+
+    <section id="result" class="result">
+      <div class="card">
+        <div class="gua-grid">
+          <div class="gua-box">
+            <div class="gua-label">元亨卦</div>
+            <div id="yuanhengName" class="gua-name">-</div>
+            <div id="yuanhengCode" class="gua-code">卦码：-</div>
+          </div>
+          <div class="gua-box">
+            <div class="gua-label">姓名卦</div>
+            <div id="nameGuaName" class="gua-name">-</div>
+            <div id="nameGuaCode" class="gua-code">卦码：-</div>
+          </div>
+          <div class="gua-box">
+            <div class="gua-label">入世卦</div>
+            <div id="rushiName" class="gua-name">-</div>
+            <div id="rushiCode" class="gua-code">卦码：-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">计算明细</h2>
+        <div id="details" class="detail-grid"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">姓名笔画</h2>
+        <table>
+          <thead>
+            <tr><th>字</th><th>简体笔画</th></tr>
+          </thead>
+          <tbody id="strokeRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer">
+      开源项目：游子卦计算器。所有计算均在浏览器本地完成，不上传姓名与生日。
+    </div>
+  </main>
+
+  <script>
+    const YOUZI_GUA = [
+      "坤", "复", "师", "临", "谦", "明夷", "升", "泰",
+      "豫", "震", "解", "归妹", "小过", "丰", "恒", "大壮",
+      "比", "屯", "坎", "节", "蹇", "既济", "井", "需",
+      "萃", "随", "困", "兑", "咸", "革", "大过", "夬",
+      "剥", "颐", "蒙", "损", "艮", "贲", "蛊", "大畜",
+      "晋", "噬嗑", "未济", "睽", "鼎", "离", "旅", "大有",
+      "观", "益", "涣", "中孚", "渐", "家人", "巽", "小畜",
+      "否", "无妄", "讼", "履", "遁", "同人", "姤", "乾"
+    ];
+
+    const STROKE_TABLE = {
+      "陈": 7,
+      "龙": 5,
+      "彪": 11,
+      "哥": 10,
+      "郭": 10,
+      "景": 12,
+      "锦": 13,
+      "宏": 7,
+      "庄": 6,
+      "舒": 12,
+      "媛": 12
+    };
+
+    function normalizeBirthday(birthdayText) {
+      if (!/^\d+$/.test(birthdayText)) {
+        throw new Error("生日数字只能包含数字。");
+      }
+      if (birthdayText.length < 5) {
+        throw new Error("生日数字长度不正确，至少应包含四位年份和月日。");
+      }
+      const year = Number(birthdayText.slice(0, 4));
+      const monthDay = birthdayText.slice(4);
+      const adjustedYear = year - 15;
+      return Number(String(adjustedYear) + monthDay);
+    }
+
+    function numberToBits(n) {
+      if (n < 0 || n > 63) {
+        throw new Error("卦码必须在 0 到 63 之间。");
+      }
+      return Array.from({ length: 6 }, (_, i) => (n >> i) & 1);
+    }
+
+    function bitsToNumber(bits) {
+      if (bits.length !== 6) {
+        throw new Error("六爻列表必须正好包含 6 个元素。");
+      }
+      return bits.reduce((sum, bit, i) => sum + bit * (2 ** i), 0);
+    }
+
+    function getYouziGuaByCode(code) {
+      if (code < 0 || code > 63) {
+        throw new Error("游子卦码必须在 0 到 63 之间。");
+      }
+      return YOUZI_GUA[code];
+    }
+
+    function formatBits(bits) {
+      return bits.join("");
+    }
+
+    function calculateYuanhengGua(birthdayText, divisor = 61) {
+      const originalBirthday = Number(birthdayText);
+      if (originalBirthday <= 0) {
+        throw new Error("生日数字必须是正整数。");
+      }
+
+      const adjustedBirthday = normalizeBirthday(birthdayText);
+      const quotient = Math.floor(adjustedBirthday / divisor);
+      const remainder = adjustedBirthday % divisor;
+
+      let yuanhengCode;
+      let rule;
+      if (quotient % 2 === 0) {
+        yuanhengCode = Math.abs(remainder - 63);
+        rule = "商为偶数，元亨卦码 = |余数 - 63|";
+      } else {
+        yuanhengCode = remainder;
+        rule = "商为奇数，元亨卦码 = 余数";
+      }
+
+      const yuanhengBits = numberToBits(yuanhengCode);
+
+      return {
+        原始生日数: originalBirthday,
+        调整后生日数: adjustedBirthday,
+        除数: divisor,
+        商: quotient,
+        余数: remainder,
+        元亨卦计算规则: rule,
+        元亨卦码: yuanhengCode,
+        元亨卦: getYouziGuaByCode(yuanhengCode),
+        元亨卦六爻: yuanhengBits,
+        元亨卦六爻字符串: formatBits(yuanhengBits)
+      };
+    }
+
+    function calculateNameGua(name) {
+      if (!name) {
+        throw new Error("请输入姓名。");
+      }
+
+      let totalStrokes = 0;
+      const strokeDetails = [];
+
+      for (const char of name) {
+        if (!(char in STROKE_TABLE)) {
+          throw new Error(`缺少汉字「${char}」的简体笔画数，请先在 STROKE_TABLE 中补充。`);
+        }
+        const strokes = STROKE_TABLE[char];
+        totalStrokes += strokes;
+        strokeDetails.push({ 字: char, 笔画: strokes });
+      }
+
+      const nameCode = totalStrokes % 64;
+      const nameBits = numberToBits(nameCode);
+
+      return {
+        姓名: name,
+        笔画明细: strokeDetails,
+        姓名总笔画: totalStrokes,
+        姓名卦码: nameCode,
+        姓名卦: getYouziGuaByCode(nameCode),
+        姓名卦六爻: nameBits,
+        姓名卦六爻字符串: formatBits(nameBits)
+      };
+    }
+
+    function calculateRushiGua(yuanhengCode, nameCode) {
+      const yuanhengBits = numberToBits(yuanhengCode);
+      const nameBits = numberToBits(nameCode);
+      const rushiBits = yuanhengBits.map((bit, i) => bit ^ nameBits[i]);
+      const rushiCode = bitsToNumber(rushiBits);
+
+      return {
+        入世卦六爻: rushiBits,
+        入世卦六爻字符串: formatBits(rushiBits),
+        入世卦码: rushiCode,
+        入世卦: getYouziGuaByCode(rushiCode)
+      };
+    }
+
+    function calculateFullGua(name, birthdayText) {
+      const yuanheng = calculateYuanhengGua(birthdayText);
+      const nameGua = calculateNameGua(name);
+      const rushi = calculateRushiGua(yuanheng.元亨卦码, nameGua.姓名卦码);
+      return { ...yuanheng, ...nameGua, ...rushi };
+    }
+
+    function addDetail(container, label, value) {
+      const item = document.createElement("div");
+      item.className = "detail";
+      item.innerHTML = `<span>${label}</span><span>${value}</span>`;
+      container.appendChild(item);
+    }
+
+    function renderResult(result) {
+      document.getElementById("yuanhengName").textContent = result.元亨卦;
+      document.getElementById("yuanhengCode").textContent = `卦码：${result.元亨卦码}`;
+      document.getElementById("nameGuaName").textContent = result.姓名卦;
+      document.getElementById("nameGuaCode").textContent = `卦码：${result.姓名卦码}`;
+      document.getElementById("rushiName").textContent = result.入世卦;
+      document.getElementById("rushiCode").textContent = `卦码：${result.入世卦码}`;
+
+      const details = document.getElementById("details");
+      details.innerHTML = "";
+      addDetail(details, "姓名", result.姓名);
+      addDetail(details, "原始生日数", result.原始生日数);
+      addDetail(details, "调整后生日数", result.调整后生日数);
+      addDetail(details, "除数", result.除数);
+      addDetail(details, "商", result.商);
+      addDetail(details, "余数", result.余数);
+      addDetail(details, "元亨卦计算规则", result.元亨卦计算规则);
+      addDetail(details, "姓名总笔画", result.姓名总笔画);
+      addDetail(details, "元亨卦六爻", result.元亨卦六爻字符串);
+      addDetail(details, "姓名卦六爻", result.姓名卦六爻字符串);
+      addDetail(details, "入世卦六爻", result.入世卦六爻字符串);
+
+      const strokeRows = document.getElementById("strokeRows");
+      strokeRows.innerHTML = "";
+      result.笔画明细.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${item.字}</td><td>${item.笔画}</td>`;
+        strokeRows.appendChild(tr);
+      });
+
+      document.getElementById("result").style.display = "block";
+    }
+
+    document.getElementById("calculatorForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const error = document.getElementById("error");
+      error.style.display = "none";
+      error.textContent = "";
+
+      try {
+        const name = document.getElementById("name").value.trim();
+        const birthday = document.getElementById("birthday").value.trim();
+        const result = calculateFullGua(name, birthday);
+        renderResult(result);
+      } catch (err) {
+        document.getElementById("result").style.display = "none";
+        error.textContent = err.message;
+        error.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
